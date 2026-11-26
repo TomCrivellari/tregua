@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Eventos - Trégua</title>
+    <link rel="stylesheet" href="/estilo.css">
+</head>
+<body>
+<div th:replace="~{menu :: menu}"></div>
+
+<main>
+    <h2>Agendar evento</h2>
+    <form id="form-evento" method="post" action="/eventos">
+        <label>Unidade
+            <select id="unidade" name="unidade" required>
+                <option th:each="u : ${unidades}" th:if="${u.morador != null}" th:value="${u.id}"
+                        th:text="${u.nome + ' - ' + u.morador.nome}"></option>
+            </select>
+        </label>
+        <label>Tipo
+            <select id="tipo" name="tipo">
+                <option th:each="t : ${tipos}" th:value="${t}" th:text="${t.descricao}"></option>
+            </select>
+        </label>
+        <label>Descrição
+            <input id="descricao" name="descricao" required>
+        </label>
+        <label>Início
+            <input id="inicio" name="inicio" type="datetime-local" required>
+        </label>
+        <label>Fim
+            <input id="fim" name="fim" type="datetime-local" required>
+        </label>
+        <label>Volume estimado (dB)
+            <input id="decibeis" name="decibeis" type="number" value="70" required>
+        </label>
+        <button id="agendar" type="submit">Agendar</button>
+    </form>
+
+    <h2>Eventos</h2>
+    <table id="tabela-eventos">
+        <tr>
+            <th>Unidade</th>
+            <th>Evento</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>dB</th>
+            <th>Custo</th>
+            <th></th>
+        </tr>
+        <tr th:each="e : ${eventos}" th:classappend="${e.cancelado} ? 'cancelado'">
+            <td th:text="${e.unidade.nome}"></td>
+            <td th:text="${e.tipo.descricao + ': ' + e.descricao}"></td>
+            <td th:text="${#temporals.format(e.inicio, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${#temporals.format(e.fim, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${e.decibeis}"></td>
+            <td th:text="${e.custo}"></td>
+            <td>
+                <span th:if="${e.cancelado}">cancelado</span>
+                <form th:unless="${e.cancelado}" method="post" th:action="@{/eventos/{id}/cancelar(id=${e.id})}">
+                    <button type="submit">Cancelar</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</main>
+</body>
+</html>

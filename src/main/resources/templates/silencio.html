@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedidos de silêncio - Trégua</title>
+    <link rel="stylesheet" href="/estilo.css">
+</head>
+<body>
+<div th:replace="~{menu :: menu}"></div>
+
+<main>
+    <h2>Pedir silêncio</h2>
+    <form id="form-silencio" method="post" action="/silencio">
+        <label>Unidade
+            <select id="unidade" name="unidade" required>
+                <option th:each="u : ${unidades}" th:if="${u.morador != null}" th:value="${u.id}"
+                        th:text="${u.nome + ' - ' + u.morador.nome}"></option>
+            </select>
+        </label>
+        <label>Motivo
+            <select id="motivo" name="motivo">
+                <option th:each="m : ${motivos}" th:value="${m}" th:text="${m.descricao}"></option>
+            </select>
+        </label>
+        <label>Início
+            <input id="inicio" name="inicio" type="datetime-local" required>
+        </label>
+        <label>Fim
+            <input id="fim" name="fim" type="datetime-local" required>
+        </label>
+        <label>Observação
+            <input id="observacao" name="observacao">
+        </label>
+        <button id="pedir" type="submit">Pedir silêncio</button>
+    </form>
+
+    <h2>Pedidos</h2>
+    <table>
+        <tr>
+            <th>Unidade</th>
+            <th>Motivo</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Observação</th>
+        </tr>
+        <tr th:each="p : ${pedidos}">
+            <td th:text="${p.unidade.nome}"></td>
+            <td th:text="${p.motivo.descricao}"></td>
+            <td th:text="${#temporals.format(p.inicio, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${#temporals.format(p.fim, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${p.observacao}"></td>
+        </tr>
+    </table>
+</main>
+</body>
+</html>

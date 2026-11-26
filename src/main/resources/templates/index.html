@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trégua</title>
+    <link rel="stylesheet" href="/estilo.css">
+</head>
+<body>
+<div th:replace="~{menu :: menu}"></div>
+
+<main>
+    <h2 th:text="${condominio.nome}"></h2>
+    <p>
+        Aqui quem quer fazer barulho paga créditos, e esses créditos vão para os vizinhos que vão ouvir.
+        Todo mês cada apartamento recebe <b th:text="${condominio.regras.creditosPorMes}"></b> créditos.
+    </p>
+    <p>Fundo do condomínio: <b id="fundo" th:text="${condominio.fundo}"></b> créditos</p>
+
+    <table>
+        <tr>
+            <th>Unidade</th>
+            <th>Morador</th>
+            <th>Saldo</th>
+        </tr>
+        <tr th:each="u : ${unidades}">
+            <td th:text="${u.nome}"></td>
+            <td th:text="${u.morador != null ? u.morador.nome : '(vaga)'}"></td>
+            <td th:text="${u.carteira.saldo}"></td>
+        </tr>
+    </table>
+</main>
+</body>
+</html>

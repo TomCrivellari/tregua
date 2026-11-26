@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="menu">
+    <header>
+        <h1>Trégua</h1>
+        <nav>
+            <a href="/">Início</a>
+            <a href="/eventos">Eventos</a>
+            <a href="/silencio">Pedidos de silêncio</a>
+            <a href="/reclamacoes">Reclamações</a>
+        </nav>
+    </header>
+    <p id="sucesso" class="msg sucesso" th:if="${sucesso}" th:text="${sucesso}"></p>
+    <p id="erro" class="msg erro" th:if="${erro}" th:text="${erro}"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f4f4;
+    color: #222;
+}
+
+header {
+    background: #2e5e4e;
+    color: white;
+    padding: 10px 20px;
+}
+
+header h1 {
+    margin: 0 0 5px 0;
+}
+
+nav a {
+    color: white;
+    margin-right: 15px;
+}
+
+main {
+    padding: 10px 20px;
+}
+
+form {
+    background: white;
+    padding: 15px;
+    border: 1px solid #ccc;
+    max-width: 500px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input, select {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+td form {
+    border: none;
+    padding: 0;
+    background: none;
+}
+
+button {
+    padding: 6px 14px;
+    cursor: pointer;
+}
+
+table {
+    border-collapse: collapse;
+    background: white;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    text-align: left;
+}
+
+.cancelado {
+    color: #999;
+    text-decoration: line-through;
+}
+
+.msg {
+    margin: 10px 20px;
+    padding: 10px;
+}
+
+.sucesso {
+    background: #d4edda;
+}
+
+.erro {
+    background: #f8d7da;
+}

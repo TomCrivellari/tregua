@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reclamações - Trégua</title>
+    <link rel="stylesheet" href="/estilo.css">
+</head>
+<body>
+<div th:replace="~{menu :: menu}"></div>
+
+<main>
+    <h2>Fazer reclamação</h2>
+    <form id="form-reclamacao" method="post" action="/reclamacoes">
+        <label>Quem reclama
+            <select id="autor" name="autor" required>
+                <option th:each="m : ${moradores}" th:value="${m.id}"
+                        th:text="${m.unidade.nome + ' - ' + m.nome}"></option>
+            </select>
+        </label>
+        <label>De qual unidade
+            <select id="alvo" name="alvo" required>
+                <option th:each="u : ${unidades}" th:value="${u.id}" th:text="${u.nome}"></option>
+            </select>
+        </label>
+        <label>Quando
+            <input id="dataHora" name="dataHora" type="datetime-local" required>
+        </label>
+        <label>dB medido no app (opcional)
+            <input id="decibeis" name="decibeis" type="number">
+        </label>
+        <label>Descrição
+            <input id="descricao" name="descricao">
+        </label>
+        <button id="reclamar" type="submit">Enviar</button>
+    </form>
+
+    <h2>Reclamações</h2>
+    <table>
+        <tr>
+            <th>Quem</th>
+            <th>Contra</th>
+            <th>Quando</th>
+            <th>Descrição</th>
+            <th>Resultado</th>
+            <th>Multa</th>
+        </tr>
+        <tr th:each="r : ${reclamacoes}">
+            <td th:text="${r.autor.unidade.nome}"></td>
+            <td th:text="${r.alvo.nome}"></td>
+            <td th:text="${#temporals.format(r.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${r.descricao}"></td>
+            <td th:text="${r.status + ' - ' + r.parecer}"></td>
+            <td th:text="${r.multa}"></td>
+        </tr>
+    </table>
+</main>
+</body>
+</html>
