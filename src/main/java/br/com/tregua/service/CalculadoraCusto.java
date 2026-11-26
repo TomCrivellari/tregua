@@ -17,9 +17,11 @@ import java.util.List;
 public class CalculadoraCusto {
 
     private Feriados feriados;
+    private Relogio relogio;
 
-    public CalculadoraCusto(Feriados feriados) {
+    public CalculadoraCusto(Feriados feriados, Relogio relogio) {
         this.feriados = feriados;
+        this.relogio = relogio;
     }
 
     public Cotacao calcular(Evento evento, Regras regras, List<PedidoSilencio> pedidos) {
@@ -81,7 +83,7 @@ public class CalculadoraCusto {
         }
 
         // avisou em cima da hora
-        if (Duration.between(LocalDateTime.now(), inicio).toHours() < 24) {
+        if (Duration.between(relogio.agora(), inicio).toHours() < 24) {
             cotacao.addDetalhe("Menos de 24h de antecedência: +" + custo / 2);
             custo += custo / 2;
         }
@@ -96,7 +98,7 @@ public class CalculadoraCusto {
         if (!fim.isAfter(inicio)) {
             return "O fim tem que ser depois do início";
         }
-        if (inicio.isBefore(LocalDateTime.now())) {
+        if (inicio.isBefore(relogio.agora())) {
             return "Não dá para agendar evento no passado";
         }
         if (evento.getDuracaoMinutos() > regras.getDuracaoMaxima()) {
