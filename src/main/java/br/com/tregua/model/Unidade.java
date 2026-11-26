@@ -20,7 +20,7 @@ public class Unidade {
         return bloco.getNome() + "-" + (andar * 100 + posicao);
     }
 
-    // quantos apartamentos de distancia (andares + lados). Bloco diferente nao conta.
+    // quantos aptos de distancia (andares + lados), se for de outro bloco nao conta
     public int distancia(Unidade outra) {
         if (outra.bloco != this.bloco) {
             return 99;

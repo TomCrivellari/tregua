@@ -51,7 +51,7 @@ class CalculadoraCustoMockTest {
     }
 
     @Test
-    void diaQueOMockDizSerFeriadoCobraMaisCinquentaPorCento() {
+    void feriadoMockado() {
         when(relogio.agora()).thenReturn(LocalDateTime.of(2030, 1, 1, 10, 0));
         when(feriados.isFeriado(any())).thenReturn(true);
 
@@ -62,7 +62,7 @@ class CalculadoraCustoMockTest {
     }
 
     @Test
-    void relogioDuasHorasAntesCobraUrgencia() {
+    void urgenciaComRelogioMockado() {
         when(relogio.agora()).thenReturn(inicio.minusHours(2));
         when(feriados.isFeriado(any())).thenReturn(false);
 
@@ -74,7 +74,7 @@ class CalculadoraCustoMockTest {
     }
 
     @Test
-    void relogioDepoisDoInicioBloqueiaSemConsultarFeriado() {
+    void passadoComRelogioMockado() {
         when(relogio.agora()).thenReturn(inicio.plusMinutes(1));
 
         Cotacao c = calcular(TipoEvento.FESTA);
@@ -84,7 +84,7 @@ class CalculadoraCustoMockTest {
     }
 
     @Test
-    void reformaEmDiaQueOMockDizSerFeriadoEBloqueada() {
+    void reformaEmFeriadoMockado() {
         when(relogio.agora()).thenReturn(LocalDateTime.of(2030, 1, 1, 10, 0));
         when(feriados.isFeriado(any())).thenReturn(true);
 

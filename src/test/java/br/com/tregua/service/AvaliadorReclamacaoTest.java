@@ -54,7 +54,7 @@ class AvaliadorReclamacaoTest {
     }
 
     @Test
-    void naoPodeReclamarDaPropriaUnidade() {
+    void propriaUnidade() {
         Reclamacao r = new Reclamacao(autor, autor.getUnidade(), NOITE, "eu mesmo");
         avaliador.julgar(r, medicoes, eventos, 0, regras);
         assertEquals(StatusReclamacao.IMPROCEDENTE, r.getStatus());
@@ -62,30 +62,30 @@ class AvaliadorReclamacaoTest {
     }
 
     @Test
-    void semMedicaoFicaInconclusiva() {
+    void semMedicao() {
         assertEquals(StatusReclamacao.INCONCLUSIVA, julgar(NOITE, 0).getStatus());
     }
 
     @Test
-    void medicaoDeOutraUnidadeNaoConta() {
+    void medicaoOutraUnidade() {
         medir(outra, 90, NOITE);
         assertEquals(StatusReclamacao.INCONCLUSIVA, julgar(NOITE, 0).getStatus());
     }
 
     @Test
-    void medicao21MinutosDistanteNaoConta() {
+    void medicao21Minutos() {
         medir(alvo, 90, NOITE.minusMinutes(21));
         assertEquals(StatusReclamacao.INCONCLUSIVA, julgar(NOITE, 0).getStatus());
     }
 
     @Test
-    void medicao20MinutosDistanteConta() {
+    void medicao20Minutos() {
         medir(alvo, 90, NOITE.plusMinutes(20));
         assertEquals(StatusReclamacao.PROCEDENTE, julgar(NOITE, 0).getStatus());
     }
 
     @Test
-    void usaOMaiorValorMedido() {
+    void pegaMaiorMedicao() {
         medir(alvo, 60, NOITE);
         medir(alvo, 52, NOITE.plusMinutes(5));
         Reclamacao r = julgar(NOITE, 0);
@@ -94,7 +94,7 @@ class AvaliadorReclamacaoTest {
     }
 
     @Test
-    void noiteCom50dBEstaNoLimite() {
+    void noite50dB() {
         medir(alvo, 50, NOITE);
         Reclamacao r = julgar(NOITE, 0);
         assertEquals(StatusReclamacao.IMPROCEDENTE, r.getStatus());
@@ -102,7 +102,7 @@ class AvaliadorReclamacaoTest {
     }
 
     @Test
-    void noiteCom51dBEProcedente() {
+    void noite51dB() {
         medir(alvo, 51, NOITE);
         Reclamacao r = julgar(NOITE, 0);
         assertEquals(StatusReclamacao.PROCEDENTE, r.getStatus());
@@ -110,55 +110,55 @@ class AvaliadorReclamacaoTest {
     }
 
     @Test
-    void tardeCom65dBEstaNoLimite() {
+    void tarde65dB() {
         medir(alvo, 65, TARDE);
         assertEquals(StatusReclamacao.IMPROCEDENTE, julgar(TARDE, 0).getStatus());
     }
 
     @Test
-    void tardeCom66dBEProcedente() {
+    void tarde66dB() {
         medir(alvo, 66, TARDE);
         assertEquals(StatusReclamacao.PROCEDENTE, julgar(TARDE, 0).getStatus());
     }
 
     @Test
-    void excessoDe5dBMulta10() {
+    void excesso5() {
         medir(alvo, 55, NOITE);
         assertEquals(10, julgar(NOITE, 0).getMulta());
     }
 
     @Test
-    void excessoDe6dBMulta20() {
+    void excesso6() {
         medir(alvo, 56, NOITE);
         assertEquals(20, julgar(NOITE, 0).getMulta());
     }
 
     @Test
-    void excessoDe15dBMulta20() {
+    void excesso15() {
         medir(alvo, 65, NOITE);
         assertEquals(20, julgar(NOITE, 0).getMulta());
     }
 
     @Test
-    void excessoDe16dBMulta35() {
+    void excesso16() {
         medir(alvo, 66, NOITE);
         assertEquals(35, julgar(NOITE, 0).getMulta());
     }
 
     @Test
-    void umaReincidenciaNaoDobra() {
+    void umaReincidencia() {
         medir(alvo, 55, NOITE);
         assertEquals(10, julgar(NOITE, 1).getMulta());
     }
 
     @Test
-    void duasReincidenciasDobramAMulta() {
+    void duasReincidencias() {
         medir(alvo, 55, NOITE);
         assertEquals(20, julgar(NOITE, 2).getMulta());
     }
 
     @Test
-    void eventoPagoCobreAteTresDbAcimaDoCombinado() {
+    void eventoCobre83dB() {
         eventos.add(new Evento(alvo, TipoEvento.FESTA, "Aniversário", NOITE.minusHours(1), NOITE.plusHours(1), 80));
         medir(alvo, 83, NOITE);
         Reclamacao r = julgar(NOITE, 0);
@@ -167,7 +167,7 @@ class AvaliadorReclamacaoTest {
     }
 
     @Test
-    void passarQuatroDbDoEventoEProcedente() {
+    void eventoNaoCobre84dB() {
         eventos.add(new Evento(alvo, TipoEvento.FESTA, "Aniversário", NOITE.minusHours(1), NOITE.plusHours(1), 80));
         medir(alvo, 84, NOITE);
         Reclamacao r = julgar(NOITE, 0);
@@ -177,7 +177,7 @@ class AvaliadorReclamacaoTest {
     }
 
     @Test
-    void eventosQueNaoValemSaoIgnorados() {
+    void eventosIgnorados() {
         Evento deOutraUnidade = new Evento(outra, TipoEvento.FESTA, "outra", NOITE.minusHours(1), NOITE.plusHours(1), 90);
         Evento cancelado = new Evento(alvo, TipoEvento.FESTA, "cancelado", NOITE.minusHours(1), NOITE.plusHours(1), 90);
         cancelado.setCancelado(true);

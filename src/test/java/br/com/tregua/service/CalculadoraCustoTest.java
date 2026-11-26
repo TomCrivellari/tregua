@@ -54,141 +54,139 @@ class CalculadoraCustoTest {
         return LocalDateTime.of(2030, 1, 8, hora, minuto);
     }
 
-    // ---------- validações
 
     @Test
-    void fimIgualAoInicioBloqueia() {
+    void fimIgualInicio() {
         Cotacao c = calcular(TipoEvento.FESTA, terca(14, 0), terca(14, 0), 60);
         assertEquals("O fim tem que ser depois do início", c.getErro());
     }
 
     @Test
-    void fimUmMinutoDepoisDoInicioPassa() {
+    void fimUmMinutoDepois() {
         Cotacao c = calcular(TipoEvento.FESTA, terca(14, 0), terca(14, 1), 60);
         assertFalse(c.isBloqueada());
         assertEquals(8, c.getValor());
     }
 
     @Test
-    void inicioUmMinutoAntesDeAgoraBloqueia() {
+    void inicioNoPassado() {
         Cotacao c = calcular(TipoEvento.FESTA, AGORA.minusMinutes(1), AGORA.plusHours(1), 60);
         assertEquals("Não dá para agendar evento no passado", c.getErro());
     }
 
     @Test
-    void inicioExatamenteAgoraPassaComUrgencia() {
+    void inicioAgora() {
         Cotacao c = calcular(TipoEvento.FESTA, AGORA, AGORA.plusHours(1), 60);
         assertFalse(c.isBloqueada());
         assertEquals(12, c.getValor());
     }
 
     @Test
-    void duracaoDe480MinutosPassa() {
+    void duracao480() {
         Cotacao c = calcular(TipoEvento.FESTA, terca(10, 0), terca(18, 0), 60);
         assertFalse(c.isBloqueada());
         assertEquals(64, c.getValor());
     }
 
     @Test
-    void duracaoDe481MinutosBloqueia() {
+    void duracao481() {
         Cotacao c = calcular(TipoEvento.FESTA, terca(10, 0), terca(18, 1), 60);
         assertEquals("O evento pode ter no máximo 8 horas", c.getErro());
     }
 
     @Test
-    void volume39BloqueiaE40Passa() {
+    void volume39e40() {
         assertTrue(calcular(TipoEvento.FESTA, terca(14, 0), terca(15, 0), 39).isBloqueada());
         assertFalse(calcular(TipoEvento.FESTA, terca(14, 0), terca(15, 0), 40).isBloqueada());
     }
 
     @Test
-    void volume105PassaE106Bloqueia() {
+    void volume105e106() {
         assertFalse(calcular(TipoEvento.FESTA, terca(14, 0), terca(15, 0), 105).isBloqueada());
         Cotacao c = calcular(TipoEvento.FESTA, terca(14, 0), terca(15, 0), 106);
         assertEquals("O volume tem que ficar entre 40 e 105 dB", c.getErro());
     }
 
     @Test
-    void reformaNoDomingoBloqueia() {
+    void reformaDomingo() {
         LocalDateTime domingo = LocalDateTime.of(2030, 1, 6, 9, 0);
         Cotacao c = calcular(TipoEvento.REFORMA, domingo, domingo.plusHours(2), 70);
         assertEquals("Reforma não pode em domingo, feriado ou horário de silêncio", c.getErro());
     }
 
     @Test
-    void reformaNoFeriadoBloqueia() {
+    void reformaFeriado() {
         LocalDateTime natal = LocalDateTime.of(2030, 12, 25, 9, 0);
         assertTrue(calcular(TipoEvento.REFORMA, natal, natal.plusHours(2), 70).isBloqueada());
     }
 
     @Test
-    void reformaQueEntraUmMinutoNoSilencioBloqueia() {
+    void reformaAte22h01() {
         assertTrue(calcular(TipoEvento.REFORMA, terca(20, 0), terca(22, 1), 70).isBloqueada());
     }
 
     @Test
-    void reformaQueTerminaAs22hPassa() {
+    void reformaAte22h() {
         Cotacao c = calcular(TipoEvento.REFORMA, terca(20, 0), terca(22, 0), 60);
         assertFalse(c.isBloqueada());
         assertEquals(12, c.getValor());
     }
 
-    // ---------- valores
 
     @Test
-    void festaSimplesDeUmaHora() {
+    void festaUmaHora() {
         Cotacao c = calcular(TipoEvento.FESTA, terca(14, 0), terca(15, 0), 60);
         assertEquals(8, c.getValor());
         assertEquals(1, c.getDetalhes().size());
     }
 
     @Test
-    void volumeNoLimiteDoDiaNaoCobraExtra() {
+    void volume65() {
         assertEquals(8, calcular(TipoEvento.FESTA, terca(14, 0), terca(15, 0), 65).getValor());
     }
 
     @Test
-    void volumeUmAcimaDoLimiteCobraUmaFaixa() {
+    void volume66e70() {
         assertEquals(10, calcular(TipoEvento.FESTA, terca(14, 0), terca(15, 0), 66).getValor());
         assertEquals(10, calcular(TipoEvento.FESTA, terca(14, 0), terca(15, 0), 70).getValor());
     }
 
     @Test
-    void volume71CobraDuasFaixas() {
+    void volume71() {
         assertEquals(12, calcular(TipoEvento.FESTA, terca(14, 0), terca(15, 0), 71).getValor());
     }
 
     @Test
-    void eventoQueEntraNoSilencioPagaHoraDobradaEUsaLimiteDaNoite() {
+    void horarioDeSilencio() {
         assertEquals(24, calcular(TipoEvento.FESTA, terca(21, 0), terca(23, 0), 50).getValor());
         assertEquals(26, calcular(TipoEvento.FESTA, terca(21, 0), terca(23, 0), 51).getValor());
     }
 
     @Test
-    void eventoQueTerminaAs22hNaoPagaSilencio() {
+    void terminaAs22h() {
         assertEquals(16, calcular(TipoEvento.FESTA, terca(20, 0), terca(22, 0), 50).getValor());
     }
 
     @Test
-    void feriadoCobraMaisCinquentaPorCento() {
+    void feriado() {
         LocalDateTime natal = LocalDateTime.of(2030, 12, 25, 14, 0);
         assertEquals(12, calcular(TipoEvento.FESTA, natal, natal.plusHours(1), 60).getValor());
     }
 
     @Test
-    void sabadoCobraMaisVintePorCento() {
+    void sabado() {
         LocalDateTime sabado = LocalDateTime.of(2030, 1, 5, 14, 0);
         assertEquals(19, calcular(TipoEvento.FESTA, sabado, sabado.plusHours(2), 60).getValor());
     }
 
     @Test
-    void domingoTambemCobraMaisVintePorCento() {
+    void domingo() {
         LocalDateTime domingo = LocalDateTime.of(2030, 1, 6, 14, 0);
         assertEquals(19, calcular(TipoEvento.FESTA, domingo, domingo.plusHours(2), 60).getValor());
     }
 
     @Test
-    void pedidosDeSilencioDosVizinhosEncarecem() {
+    void pedidosDeSilencio() {
         LocalDateTime inicio = terca(14, 0);
         LocalDateTime fim = terca(16, 0);
         pedidos.add(new PedidoSilencio(a301, MotivoSilencio.BEBE, inicio, fim, "vizinho de cima"));
@@ -203,14 +201,14 @@ class CalculadoraCustoTest {
     }
 
     @Test
-    void comVinteETresHorasDeAntecedenciaCobraUrgencia() {
+    void antecedencia23h() {
         LocalDateTime inicio = AGORA.plusHours(23);
         Cotacao c = calcular(TipoEvento.FESTA, inicio, inicio.plusHours(1), 60);
         assertEquals(12, c.getValor());
     }
 
     @Test
-    void comVinteEQuatroHorasDeAntecedenciaNaoCobraUrgencia() {
+    void antecedencia24h() {
         LocalDateTime inicio = AGORA.plusHours(24);
         Cotacao c = calcular(TipoEvento.FESTA, inicio, inicio.plusHours(1), 60);
         assertEquals(8, c.getValor());
